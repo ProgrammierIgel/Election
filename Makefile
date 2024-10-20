@@ -5,7 +5,7 @@ analyze:
 	@go run honnef.co/go/tools/cmd/staticcheck@latest --checks=all ./...
 
 build: qa
-	@go build -o ./build/voting .
+	@go build -o ./build/voting.exe .
 
 build-docker:
 	@docker build -t programmierigel/voting .
