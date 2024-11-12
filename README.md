@@ -23,8 +23,9 @@ Query
   - Response:```
     {
       "votingActive": bool
-    }
-  ```
+    }```
+
+    
 Commands
 - activate Voting
   - /activateVoting
