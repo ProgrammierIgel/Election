@@ -5,17 +5,17 @@ import (
 	"net/http"
 
 	"github.com/programmierigel/voting/api"
-	"github.com/programmierigel/voting/enviornment"
+	"github.com/programmierigel/voting/environment"
 	"github.com/programmierigel/voting/storage/inmemory"
 )
 
 func main() {
-	port, err := enviornment.Port(3000)
+	port, err := environment.Port(3000)
 	if err != nil {
 		panic(err)
 	}
 
-	password, err := enviornment.Password()
+	password, err := environment.Password()
 	if err != nil {
 		panic(err)
 	}
