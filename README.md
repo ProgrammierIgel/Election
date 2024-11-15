@@ -11,7 +11,7 @@ Query
 - show Voting
   - /showVoting
   - Response: ``` {
-      "Undefined":  int,
+      "undefined":  int,
       "Candidate1": int,
       "Candidate2": int,
       "Candidate3": int,
@@ -25,7 +25,7 @@ Query
       "votingActive": bool
     }```
 
-    
+
 Commands
 - activate Voting
   - /activateVoting

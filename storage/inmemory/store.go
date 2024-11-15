@@ -2,7 +2,7 @@ package inmemory
 
 import (
 	"fmt"
-	"reflect"
+	"strconv"
 
 	"github.com/programmierigel/voting/storage"
 	"github.com/programmierigel/voting/tools"
@@ -10,49 +10,33 @@ import (
 )
 
 type Store struct {
-	votes         storage.Candidates
+	candidates    storage.Candidates
+	votes         storage.CandidatesVoteStore
 	votesCounting storage.CountingVotes
 	votingActive  bool
 	password      string
 }
 
 func New(password string) *Store {
+	candidates := []string{
+		"undefined",
+		"Candidate1",
+		"Candidate2",
+		"Candidate3",
+		"Candidate4",
+		"Candidate5",
+	}
 	return &Store{
-		votes: storage.Candidates{
-			Undefined:  []string{"123"},
-			Candidate1: []string{},
-			Candidate2: []string{},
-			Candidate3: []string{},
-			Candidate4: []string{},
-			Candidate5: []string{},
-		},
-		votesCounting: storage.CountingVotes{
-			Undefined:  0,
-			Candidate1: 0,
-			Candidate2: 0,
-			Candidate3: 0,
-			Candidate4: 0,
-			Candidate5: 0,
-		},
-		votingActive: false,
-		password:     password,
+		candidates:    candidates,
+		votes:         make(storage.CandidatesVoteStore, len(candidates)),
+		votesCounting: make(map[string]int, len(candidates)),
+		votingActive:  false,
+		password:      password,
 	}
 }
 
 func (s *Store) GetCandidates() []string {
-	// (i) By Gemini
-	t := reflect.TypeOf(storage.Candidates{})
-
-	keys := make([]string, 0, t.NumField())
-
-	for i := 0; i < t.NumField(); i++ {
-		field := t.Field(i)
-		if field.Name != "" {
-			keys = append(keys, field.Name)
-		}
-	}
-
-	return keys
+	return s.candidates
 }
 
 func (s *Store) CountVoting() storage.CountingVotes {
@@ -72,53 +56,42 @@ func (s *Store) InsertVote(insertedVote voting.Vote) error {
 	}
 
 	if !tools.StringInSlice(candidate, allCandidates) {
-		fmt.Println("LOL2")
 		return fmt.Errorf("not valid vote")
 	}
 
-	if candidate == "Undefined" {
+	if candidate == "undefined" {
 		return fmt.Errorf("not valid vote")
 	}
 
-	if !tools.StringInSlice(id, s.votes.Undefined) {
+	PositionOfUndefinedInCandidates, err := tools.FindInSlice(s.candidates, "undefined")
+	if err != nil {
+		return err
+	}
+	if !tools.StringInSlice(id, s.votes[s.candidates[PositionOfUndefinedInCandidates]]) {
 		return fmt.Errorf("not valid id // doublevote")
 	}
 
-	values := reflect.ValueOf(s.votes)
-	types := values.Type()
+	for i, v := range s.candidates {
+		fmt.Print(strconv.Itoa(i + 2))
+		if v == candidate {
+			PositionOfCandidate, err := tools.FindInSlice(s.candidates, candidate)
 
-	for i := 0; i < values.NumField(); i++ {
-		if types.Field(i).Name == candidate {
-			slice := reflect.Append(values.Field(i), reflect.ValueOf(id)).Interface().([]string)
-
-			switch types.Field(i).Name {
-
-			case "Candidate1":
-				s.votes.Candidate1 = slice
-				s.votesCounting.Candidate1 += 1
-			case "Candidate2":
-				s.votes.Candidate2 = slice
-				s.votesCounting.Candidate2 += 1
-			case "Candidate3":
-				s.votes.Candidate3 = slice
-				s.votesCounting.Candidate3 += 1
-			case "Candidate4":
-				s.votes.Candidate4 = slice
-				s.votesCounting.Candidate4 += 1
-			case "Candidate5":
-				s.votes.Candidate5 = slice
-				s.votesCounting.Candidate5 += 1
+			if err != nil {
+				return err
 			}
+
+			s.votes[s.candidates[PositionOfCandidate]] = append(s.votes[v], id)
+			s.votesCounting[s.candidates[PositionOfCandidate]] += 1
 
 		}
 	}
 
-	index, err := tools.GetIndexOfElementInSlice(s.votes.Undefined, id)
+	index, err := tools.FindInSlice(s.votes[s.candidates[PositionOfUndefinedInCandidates]], id)
 	if err != nil {
 		return fmt.Errorf("internal server error")
 	}
 
-	s.votes.Undefined = tools.RemoveElementFromSlice(s.votes.Undefined, index)
+	s.votes[s.candidates[PositionOfUndefinedInCandidates]] = tools.RemoveElementFromSlice(s.votes[s.candidates[PositionOfUndefinedInCandidates]], index)
 
 	return nil
 
@@ -129,24 +102,7 @@ func (s *Store) DeleteAll(password string) error {
 		return fmt.Errorf("unknown password")
 	}
 
-	s.votes = storage.Candidates{
-		Undefined:  []string{},
-		Candidate1: []string{},
-		Candidate2: []string{},
-		Candidate3: []string{},
-		Candidate4: []string{},
-		Candidate5: []string{},
-	}
-
-	s.votesCounting = storage.CountingVotes{
-		Undefined:  0,
-		Candidate1: 0,
-		Candidate2: 0,
-		Candidate3: 0,
-		Candidate4: 0,
-		Candidate5: 0,
-	}
-
+	s = New(s.password)
 	return nil
 }
 
@@ -180,8 +136,11 @@ func (s *Store) InsertNewVotable(password string, votabel string) error {
 	if password != s.password {
 		return fmt.Errorf("unkown password")
 	}
-
-	s.votes.Undefined = append(s.votes.Undefined, votabel)
+	PosUndef, err := tools.FindInSlice(s.candidates, "undefined")
+	if err != nil {
+		return err
+	}
+	s.votes[s.candidates[PosUndef]] = append(s.votes[s.candidates[PosUndef]], votabel)
 	return nil
 }
 
