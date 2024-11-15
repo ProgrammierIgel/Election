@@ -121,7 +121,7 @@ func (s *Store) ActivateVoting(password string) (bool, error) {
 
 func (s *Store) DeactivateVoting(password string) (bool, error) {
 	if !s.votingActive {
-		return true, fmt.Errorf("voting already inactiveW")
+		return true, fmt.Errorf("voting already inactive")
 	}
 
 	if password == s.password {
