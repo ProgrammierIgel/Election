@@ -101,8 +101,10 @@ func (s *Store) DeleteAll(password string) error {
 	if password != s.password {
 		return fmt.Errorf("unknown password")
 	}
-
-	s = New(s.password)
+  newStore := New(s.password)
+  s.votes = newStore.votes
+  s.votesCounting = newStore.votesCounting
+  s.votingActive = newStore.votingActive
 	return nil
 }
 

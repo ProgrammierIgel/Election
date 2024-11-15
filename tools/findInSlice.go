@@ -8,5 +8,5 @@ func FindInSlice(list []string, toSearch string) (int, error) {
 			return i, nil
 		}
 	}
-	return 0, fmt.Errorf("Not found")
+	return 0, fmt.Errorf("not found")
 }
