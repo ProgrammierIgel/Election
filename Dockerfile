@@ -1,4 +1,4 @@
-FROM golang:1.22-alpine AS builder
+FROM golang:1.23-alpine AS builder
 
 RUN apk update
 
@@ -13,7 +13,7 @@ RUN GOOS=linux GOARCH=amd64 go build -o /go/bin/voting
 
 # ---
 
-FROM alpine:3.20.2
+FROM alpine:3.20.3
 
 COPY --from=builder /go/bin/voting /usr/local/bin/voting
 

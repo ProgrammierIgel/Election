@@ -2,3 +2,5 @@ Makefile
 README.md
 .gitignore
 .dockerignore
+.vscode/
+build/

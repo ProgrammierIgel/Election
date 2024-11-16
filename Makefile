@@ -8,7 +8,7 @@ build: qa
 	@go build -o ./build/voting.exe .
 
 build-docker:
-	@docker build -t programmierigel/voting .
+	@docker build -t programmierigel/election .
 
 coverage: test
 	@mkdir -p ./coverage
@@ -17,11 +17,11 @@ coverage: test
 	@open ./coverage/coverage.html
 
 docker-push: build-docker
-	@docker push programmierigel/voting
+	@docker push programmierigel/election
 	@docker system prune --all --volumes --force
 
 docker-run: docker-push build-docker
-	@docker pull programmierigel/voting
+	@docker pull programmierigel/election
 	docker run -d -p 3000:3000 -e PASSWORD=123 programmierigel/voting
 
 test:

@@ -32,6 +32,7 @@ func Handle(store storage.Store) httprouter.Handle {
 		}
 
 		response.Header().Set("Content-Type", "application/json")
+		response.Header().Set("Access-Control-Allow-Origin", "*")
 		response.WriteHeader(http.StatusOK)
 		response.Write([]byte(http.StatusText(http.StatusOK)))
 	}
