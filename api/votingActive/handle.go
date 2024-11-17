@@ -10,6 +10,7 @@ import (
 
 func Handle(store storage.Store) httprouter.Handle {
 	return func(response http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+    response.Header().Set("Access-Control-Allow-Origin", "*")
 
 		status := store.IsVotingActive()
 
@@ -24,7 +25,6 @@ func Handle(store storage.Store) httprouter.Handle {
 		}
 
 		response.Header().Set("Content-Type", "application/json")
-		response.Header().Set("Access-Control-Allow-Origin", "*")
 		response.WriteHeader(http.StatusOK)
 		response.Write(responseBytes)
 	}
