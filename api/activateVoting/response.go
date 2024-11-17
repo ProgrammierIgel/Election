@@ -1,5 +1,5 @@
 package activatevoting
 
 type ResponseBody struct {
-	Status bool `json:"votingActive"`
+	Status bool `json:"status"`
 }
