@@ -18,6 +18,7 @@ type Store struct {
 }
 
 func New(password string) *Store {
+
 	candidates := []string{
 		"undefined",
 		"Candidate1",
@@ -26,10 +27,18 @@ func New(password string) *Store {
 		"Candidate4",
 		"Candidate5",
 	}
+
+	votingCount := make(map[string]int, len(candidates))
+
+	for i := 0; i < len(candidates); i++ {
+		votingCount[candidates[i]] = 0
+
+	}
+
 	return &Store{
 		candidates:    candidates,
 		votes:         make(storage.CandidatesVoteStore, len(candidates)),
-		votesCounting: make(map[string]int, len(candidates)),
+		votesCounting: votingCount,
 		votingActive:  false,
 		password:      password,
 	}
@@ -101,10 +110,10 @@ func (s *Store) DeleteAll(password string) error {
 	if password != s.password {
 		return fmt.Errorf("unknown password")
 	}
-  newStore := New(s.password)
-  s.votes = newStore.votes
-  s.votesCounting = newStore.votesCounting
-  s.votingActive = newStore.votingActive
+	newStore := New(s.password)
+	s.votes = newStore.votes
+	s.votesCounting = newStore.votesCounting
+	s.votingActive = newStore.votingActive
 	return nil
 }
 
@@ -143,6 +152,7 @@ func (s *Store) InsertNewVotable(password string, votabel string) error {
 		return err
 	}
 	s.votes[s.candidates[PosUndef]] = append(s.votes[s.candidates[PosUndef]], votabel)
+	s.votesCounting[s.candidates[PosUndef]] += 1
 	return nil
 }
 
