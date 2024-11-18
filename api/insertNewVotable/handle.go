@@ -32,7 +32,7 @@ func Handle(store storage.Store) httprouter.Handle {
 			return
 		}
 
-		response.Header().Set("Content-Type", "application/json")
+		response.Header().Set("Content-Type", "text/plain")
 		response.WriteHeader(http.StatusOK)
 		response.Write([]byte(http.StatusText(http.StatusOK)))
 	}

@@ -10,8 +10,8 @@ import (
 )
 
 func Handle(store storage.Store) httprouter.Handle {
-  return func(response http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-    response.Header().Set("Access-Control-Allow-Origin", "*")
+	return func(response http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+		response.Header().Set("Access-Control-Allow-Origin", "*")
 		requestBytes, err := io.ReadAll(io.LimitReader(request.Body, 4096))
 		if err != nil {
 			http.Error(response, err.Error(), http.StatusInternalServerError)
@@ -32,7 +32,7 @@ func Handle(store storage.Store) httprouter.Handle {
 			return
 		}
 
-		response.Header().Set("Content-Type", "application/json")
+		response.Header().Set("Content-Type", "text/plain")
 		response.WriteHeader(http.StatusOK)
 		response.Write([]byte(http.StatusText(http.StatusOK)))
 	}
