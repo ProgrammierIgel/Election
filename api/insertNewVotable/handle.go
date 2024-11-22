@@ -32,8 +32,18 @@ func Handle(store storage.Store) httprouter.Handle {
 			return
 		}
 
-		response.Header().Set("Content-Type", "text/plain")
+		responseBody := ResponseBody{
+			Status: "OK",
+		}
+
+		responseBytes, err := json.Marshal(responseBody)
+		if err != nil {
+			http.Error(response, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		response.Header().Set("Content-Type", "application/json")
 		response.WriteHeader(http.StatusOK)
-		response.Write([]byte(http.StatusText(http.StatusOK)))
+		response.Write(responseBytes)
 	}
 }
