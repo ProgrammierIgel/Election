@@ -105,8 +105,8 @@ func (s *Store) InsertVote(insertedVote voting.Vote) error {
 	}
 
 	s.votes[s.candidates[PositionOfUndefinedInCandidates]] = tools.RemoveElementFromSlice(s.votes[s.candidates[PositionOfUndefinedInCandidates]], index)
-
-	return nil
+  s.votesCounting[s.candidates[PositionOfUndefinedInCandidates]] -=1
+  return nil
 
 }
 
