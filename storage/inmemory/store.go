@@ -48,6 +48,10 @@ func (s *Store) GetCandidates() []string {
 	return s.candidates
 }
 
+func (s *Store) CheckPassword(passwordToCheck string) bool {
+	return passwordToCheck == s.password
+}
+
 func (s *Store) CountVoting() storage.CountingVotes {
 	return s.votesCounting
 }
@@ -143,15 +147,15 @@ func (s *Store) DeactivateVoting(password string) (bool, error) {
 	return s.votingActive, fmt.Errorf("unknown password")
 }
 
-func (s *Store) InsertNewVotable(password string, votabel string) error {
+func (s *Store) InsertNewVotable(password string, votable string) error {
 	if password != s.password {
-		return fmt.Errorf("unkown password")
+		return fmt.Errorf("unknown password")
 	}
 	PosUndef, err := tools.FindInSlice(s.candidates, "undefined")
 	if err != nil {
 		return err
 	}
-	s.votes[s.candidates[PosUndef]] = append(s.votes[s.candidates[PosUndef]], votabel)
+	s.votes[s.candidates[PosUndef]] = append(s.votes[s.candidates[PosUndef]], votable)
 	s.votesCounting[s.candidates[PosUndef]] += 1
 	return nil
 }

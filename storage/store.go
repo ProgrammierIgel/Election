@@ -7,6 +7,7 @@ type Store interface {
 	GetCandidates() []string
 	IsVotingActive() bool
 
+	CheckPassword(passwordToCheck string) bool
 	InsertVote(vote voting.Vote) error
 
 	ActivateVoting(password string) (bool, error)
