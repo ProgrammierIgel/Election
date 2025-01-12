@@ -105,8 +105,8 @@ func (s *Store) InsertVote(insertedVote voting.Vote) error {
 	}
 
 	s.votes[s.candidates[PositionOfUndefinedInCandidates]] = tools.RemoveElementFromSlice(s.votes[s.candidates[PositionOfUndefinedInCandidates]], index)
-  s.votesCounting[s.candidates[PositionOfUndefinedInCandidates]] -=1
-  return nil
+	s.votesCounting[s.candidates[PositionOfUndefinedInCandidates]] -= 1
+	return nil
 
 }
 
@@ -119,6 +119,28 @@ func (s *Store) DeleteAll(password string) error {
 	s.votesCounting = newStore.votesCounting
 	s.votingActive = newStore.votingActive
 	return nil
+}
+
+func (s *Store) GetAllVotes() ([]storage.AllVotes, error) {
+	allVotes := []storage.AllVotes{}
+	currentID := 0
+	for i := range s.votes {
+		PosOfCandidate, err := tools.FindInSlice(s.candidates, i)
+		if err != nil {
+			return allVotes, fmt.Errorf("candidate not found")
+		}
+
+		for j := range s.votes[i] {
+
+			allVotes = append(allVotes, storage.AllVotes{
+				ID:       currentID,
+				VoteName: s.votes[i][j],
+				Value:    s.candidates[PosOfCandidate],
+			})
+			currentID = currentID + 1
+		}
+	}
+	return allVotes, nil
 }
 
 func (s *Store) ActivateVoting(password string) (bool, error) {

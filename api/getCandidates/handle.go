@@ -2,7 +2,6 @@ package getcandidates
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -28,7 +27,5 @@ func Handle(store storage.Store) httprouter.Handle {
 		response.Header().Set("Content-Type", "application/json")
 		response.WriteHeader(http.StatusOK)
 		response.Write(responseBytes)
-
-		fmt.Println(store.IsVotingActive())
 	}
 }

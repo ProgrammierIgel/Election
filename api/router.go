@@ -6,6 +6,7 @@ import (
 	checkpassword "github.com/programmierigel/voting/api/checkPassword"
 	deactivatevoting "github.com/programmierigel/voting/api/deactivateVoting"
 	deleteall "github.com/programmierigel/voting/api/deleteAll"
+	getallids "github.com/programmierigel/voting/api/getAllIds"
 	getcandidates "github.com/programmierigel/voting/api/getCandidates"
 	insertnewvotable "github.com/programmierigel/voting/api/insertNewVotable"
 	"github.com/programmierigel/voting/api/makevote"
@@ -23,6 +24,7 @@ func GetRouter(store storage.Store, password string) *httprouter.Router {
 	router.GET("/showVoting", showvoting.Handle(store))
 	router.GET("/getCandidates", getcandidates.Handle(store))
 	router.GET("/votingActive", votingactive.Handle(store))
+	router.GET("/getAllIds", getallids.Handle(store))
 	// COMMAND
 	router.POST("/activateVoting", activatevoting.Handle(store))
 	router.POST("/deactivateVoting", deactivatevoting.Handle(store))

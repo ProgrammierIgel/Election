@@ -1,11 +1,14 @@
 package storage
 
-import "github.com/programmierigel/voting/voting"
+import (
+	"github.com/programmierigel/voting/voting"
+)
 
 type Store interface {
 	CountVoting() CountingVotes
 	GetCandidates() []string
 	IsVotingActive() bool
+	GetAllVotes() ([]AllVotes, error)
 
 	CheckPassword(passwordToCheck string) bool
 	InsertVote(vote voting.Vote) error
