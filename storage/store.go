@@ -13,7 +13,7 @@ type Store interface {
 	InsertVote(vote voting.Vote) error
 
 	ActivateVoting(password string) (bool, error)
-	GetAllUndefinedVotes() ([]AllVotes, error)
+	GetAllUndefinedVotes(password string) ([]AllVotes, error)
 	DeactivateVoting(password string) (bool, error)
 	DeleteAll(password string) error
 	DeleteAllVotes(password string) error

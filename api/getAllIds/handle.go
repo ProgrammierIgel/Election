@@ -25,7 +25,7 @@ func Handle(store storage.Store) httprouter.Handle {
 			return
 		}
 
-		getAllUndefinedVotes, err := store.GetAllUndefinedVotes()
+		getAllUndefinedVotes, err := store.GetAllUndefinedVotes(requestBody.Password)
 		if err != nil {
 			http.Error(response, err.Error(), http.StatusInternalServerError)
 		}
