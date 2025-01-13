@@ -2,7 +2,6 @@ package inmemory
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/programmierigel/voting/storage"
 	"github.com/programmierigel/voting/tools"
@@ -111,6 +110,18 @@ func (s *Store) DeleteAll(password string) error {
 	}
 	newStore := New(s.password)
 	s.votes = newStore.votes
+  s.candidates = newStore.candidates
+	s.votesCounting = newStore.votesCounting
+	s.votingActive = newStore.votingActive
+	return nil
+}
+
+func (s *Store) DeleteAllVotes(password string) error {
+	if password != s.password {
+		return fmt.Errorf("unknown password")
+	}
+	newStore := New(s.password)
+	s.votes = newStore.votes
 	s.votesCounting = newStore.votesCounting
 	s.votingActive = newStore.votingActive
 	return nil
@@ -127,17 +138,17 @@ func (s *Store) GetAllUndefinedVotes(password string) ([]storage.AllVotes, error
 
 	allVotes := []storage.AllVotes{}
 	PosOfUndefined, err := tools.FindInSlice(s.candidates, "undefined")
-		if err != nil {
+	if err != nil {
 		return allVotes, fmt.Errorf("undefined not found")
-		}
+	}
 
 	for j := range s.votes[s.candidates[PosOfUndefined]] {
 
-			allVotes = append(allVotes, storage.AllVotes{
+		allVotes = append(allVotes, storage.AllVotes{
 			ID:       j,
 			VoteName: s.votes[s.candidates[PosOfUndefined]][j],
 			Value:    s.candidates[PosOfUndefined],
-			})
+		})
 	}
 
 	return allVotes, nil

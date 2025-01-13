@@ -3,9 +3,11 @@ package api
 import (
 	"github.com/julienschmidt/httprouter"
 	activatevoting "github.com/programmierigel/voting/api/activateVoting"
+	addcandidates "github.com/programmierigel/voting/api/addCandidate"
 	checkpassword "github.com/programmierigel/voting/api/checkPassword"
 	deactivatevoting "github.com/programmierigel/voting/api/deactivateVoting"
 	deleteall "github.com/programmierigel/voting/api/deleteAll"
+	deleteallvotes "github.com/programmierigel/voting/api/deleteAllVotes"
 	getallids "github.com/programmierigel/voting/api/getAllIds"
 	getcandidates "github.com/programmierigel/voting/api/getCandidates"
 	insertnewvotable "github.com/programmierigel/voting/api/insertNewVotable"
@@ -29,6 +31,7 @@ func GetRouter(store storage.Store, password string) *httprouter.Router {
 	router.POST("/activateVoting", activatevoting.Handle(store))
 	router.POST("/deactivateVoting", deactivatevoting.Handle(store))
 	router.POST("/deleteAll", deleteall.Handle(store))
+	router.POST("/deleteAllVotes", deleteallvotes.Handle(store))
 	router.POST("/makeVote", makevote.Handle(store))
 	router.POST("/insertNewVotable", insertnewvotable.Handle(store))
 	router.POST("/checkPassword", checkpassword.Handle(store))
