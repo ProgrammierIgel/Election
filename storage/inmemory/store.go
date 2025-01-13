@@ -84,8 +84,8 @@ func (s *Store) InsertVote(insertedVote voting.Vote) error {
 		return fmt.Errorf("not valid id // doublevote")
 	}
 
-	for i, v := range s.candidates {
-		fmt.Print(strconv.Itoa(i + 2))
+	for _, v := range s.candidates {
+		// fmt.Print(strconv.Itoa(i + 2))
 		if v == candidate {
 			PositionOfCandidate, err := tools.FindInSlice(s.candidates, candidate)
 
@@ -121,25 +121,30 @@ func (s *Store) DeleteAll(password string) error {
 	return nil
 }
 
-func (s *Store) GetAllVotes() ([]storage.AllVotes, error) {
+func (s *Store) GetAllUndefinedVotes(password string) ([]storage.AllVotes, error) {
+  if password != s.password {
+    return nil, fmt.Errorf("unknown password")
+  }
+
+  if s.votingActive {
+    return nil, fmt.Errorf("voting active")
+  }
+
 	allVotes := []storage.AllVotes{}
-	currentID := 0
-	for i := range s.votes {
-		PosOfCandidate, err := tools.FindInSlice(s.candidates, i)
+	PosOfUndefined, err := tools.FindInSlice(s.candidates, "undefined")
 		if err != nil {
-			return allVotes, fmt.Errorf("candidate not found")
+		return allVotes, fmt.Errorf("undefined not found")
 		}
 
-		for j := range s.votes[i] {
+	for j := range s.votes[s.candidates[PosOfUndefined]] {
 
 			allVotes = append(allVotes, storage.AllVotes{
-				ID:       currentID,
-				VoteName: s.votes[i][j],
-				Value:    s.candidates[PosOfCandidate],
+			ID:       j,
+			VoteName: s.votes[s.candidates[PosOfUndefined]][j],
+			Value:    s.candidates[PosOfUndefined],
 			})
-			currentID = currentID + 1
-		}
 	}
+
 	return allVotes, nil
 }
 

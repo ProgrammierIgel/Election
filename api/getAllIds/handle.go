@@ -2,7 +2,7 @@ package getallids
 
 import (
 	"encoding/json"
-	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -12,14 +12,26 @@ import (
 func Handle(store storage.Store) httprouter.Handle {
 	return func(response http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 		response.Header().Set("Access-Control-Allow-Origin", "*")
+		requestBytes, err := io.ReadAll(io.LimitReader(request.Body, 4096))
+		if err != nil {
+			http.Error(response, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
-		getAllVotes, err := store.GetAllVotes()
+		var requestBody RequestBody
+		err = json.Unmarshal(requestBytes, &requestBody)
+		if err != nil {
+			http.Error(response, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		getAllUndefinedVotes, err := store.GetAllUndefinedVotes()
 		if err != nil {
 			http.Error(response, err.Error(), http.StatusInternalServerError)
 		}
 
 		responseBody := ResponseBody{
-			Votes: getAllVotes,
+			Votes: getAllUndefinedVotes,
 		}
 
 		responseBytes, err := json.Marshal(responseBody)
@@ -32,6 +44,6 @@ func Handle(store storage.Store) httprouter.Handle {
 		response.WriteHeader(http.StatusOK)
 		response.Write(responseBytes)
 
-		fmt.Println(store.IsVotingActive())
+		// fmt.Println(store.IsVotingActive())
 	}
 }

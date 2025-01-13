@@ -24,8 +24,8 @@ func GetRouter(store storage.Store, password string) *httprouter.Router {
 	router.GET("/showVoting", showvoting.Handle(store))
 	router.GET("/getCandidates", getcandidates.Handle(store))
 	router.GET("/votingActive", votingactive.Handle(store))
-	router.GET("/getAllIds", getallids.Handle(store))
 	// COMMAND
+	router.POST("/getAllIds", getallids.Handle(store))
 	router.POST("/activateVoting", activatevoting.Handle(store))
 	router.POST("/deactivateVoting", deactivatevoting.Handle(store))
 	router.POST("/deleteAll", deleteall.Handle(store))

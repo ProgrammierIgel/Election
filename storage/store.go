@@ -8,12 +8,12 @@ type Store interface {
 	CountVoting() CountingVotes
 	GetCandidates() []string
 	IsVotingActive() bool
-	GetAllVotes() ([]AllVotes, error)
 
 	CheckPassword(passwordToCheck string) bool
 	InsertVote(vote voting.Vote) error
 
 	ActivateVoting(password string) (bool, error)
+	GetAllUndefinedVotes() ([]AllVotes, error)
 	DeactivateVoting(password string) (bool, error)
 	DeleteAll(password string) error
 	InsertNewVotable(password string, votabel string) error
