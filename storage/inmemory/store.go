@@ -21,11 +21,6 @@ func New(password string) *Store {
 
 	candidates := []string{
 		"undefined",
-		"Candidate1",
-		"Candidate2",
-		"Candidate3",
-		"Candidate4",
-		"Candidate5",
 	}
 
 	votingCount := make(map[string]int, len(candidates))
@@ -190,4 +185,17 @@ func (s *Store) InsertNewVotable(password string, votable string) error {
 func (s *Store) IsVotingActive() bool {
 	return s.votingActive
 
+}
+
+func (s *Store) AddCandidate(password string, candidate string) error {
+  if password != s.password {
+    return fmt.Errorf("unknown password")
+  }
+
+  if s.votingActive {
+    return fmt.Errorf("voting active")
+  }
+
+  s.candidates = append(s.candidates, candidate)
+  return nil
 }

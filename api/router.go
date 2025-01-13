@@ -32,6 +32,7 @@ func GetRouter(store storage.Store, password string) *httprouter.Router {
 	router.POST("/makeVote", makevote.Handle(store))
 	router.POST("/insertNewVotable", insertnewvotable.Handle(store))
 	router.POST("/checkPassword", checkpassword.Handle(store))
+	router.POST("/addCandidate", addcandidates.Handle(store))
 
 	return router
 }

@@ -17,4 +17,5 @@ type Store interface {
 	DeactivateVoting(password string) (bool, error)
 	DeleteAll(password string) error
 	InsertNewVotable(password string, votabel string) error
+	AddCandidate(password string, candidate string) error
 }
