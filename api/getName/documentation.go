@@ -1,3 +1,3 @@
-// Package getname implements the rounter handler
+// Package getname implements the router handler
 // for the "is voting active" query.
 package getname
