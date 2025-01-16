@@ -3,15 +3,15 @@ package inmemory
 import (
 	"fmt"
 
-	"github.com/programmierigel/voting/storage"
 	"github.com/programmierigel/voting/tools"
 	"github.com/programmierigel/voting/voting"
 )
 
 type Store struct {
-	candidates    storage.Candidates
-	votes         storage.CandidatesVoteStore
-	votesCounting storage.CountingVotes
+	name          string
+	candidates    voting.Candidates
+	votes         voting.CandidatesVoteStore
+	votesCounting voting.CountingVotes
 	votingActive  bool
 	password      string
 }
@@ -30,8 +30,9 @@ func New(password string) *Store {
 	}
 
 	return &Store{
+		name:          "",
 		candidates:    candidates,
-		votes:         make(storage.CandidatesVoteStore, len(candidates)),
+		votes:         make(voting.CandidatesVoteStore, len(candidates)),
 		votesCounting: votingCount,
 		votingActive:  false,
 		password:      password,
@@ -46,7 +47,7 @@ func (s *Store) CheckPassword(passwordToCheck string) bool {
 	return passwordToCheck == s.password
 }
 
-func (s *Store) CountVoting() storage.CountingVotes {
+func (s *Store) CountVoting() voting.CountingVotes {
 	return s.votesCounting
 }
 
@@ -110,7 +111,7 @@ func (s *Store) DeleteAll(password string) error {
 	}
 	newStore := New(s.password)
 	s.votes = newStore.votes
-  s.candidates = newStore.candidates
+	s.candidates = newStore.candidates
 	s.votesCounting = newStore.votesCounting
 	s.votingActive = newStore.votingActive
 	return nil
@@ -127,16 +128,16 @@ func (s *Store) DeleteAllVotes(password string) error {
 	return nil
 }
 
-func (s *Store) GetAllUndefinedVotes(password string) ([]storage.AllVotes, error) {
-  if password != s.password {
-    return nil, fmt.Errorf("unknown password")
-  }
+func (s *Store) GetAllUndefinedVotes(password string) ([]voting.AllVotes, error) {
+	if password != s.password {
+		return nil, fmt.Errorf("unknown password")
+	}
 
-  if s.votingActive {
-    return nil, fmt.Errorf("voting active")
-  }
+	if s.votingActive {
+		return nil, fmt.Errorf("voting active")
+	}
 
-	allVotes := []storage.AllVotes{}
+	allVotes := []voting.AllVotes{}
 	PosOfUndefined, err := tools.FindInSlice(s.candidates, "undefined")
 	if err != nil {
 		return allVotes, fmt.Errorf("undefined not found")
@@ -144,7 +145,7 @@ func (s *Store) GetAllUndefinedVotes(password string) ([]storage.AllVotes, error
 
 	for j := range s.votes[s.candidates[PosOfUndefined]] {
 
-		allVotes = append(allVotes, storage.AllVotes{
+		allVotes = append(allVotes, voting.AllVotes{
 			ID:       j,
 			VoteName: s.votes[s.candidates[PosOfUndefined]][j],
 			Value:    s.candidates[PosOfUndefined],
@@ -199,14 +200,59 @@ func (s *Store) IsVotingActive() bool {
 }
 
 func (s *Store) AddCandidate(password string, candidate string) error {
-  if password != s.password {
-    return fmt.Errorf("unknown password")
-  }
+	if password != s.password {
+		return fmt.Errorf("unknown password")
+	}
 
-  if s.votingActive {
-    return fmt.Errorf("voting active")
-  }
+	if s.votingActive {
+		return fmt.Errorf("voting active")
+	}
 
-  s.candidates = append(s.candidates, candidate)
-  return nil
+	s.candidates = append(s.candidates, candidate)
+	return nil
+}
+
+func (s *Store) RemoveCandidate(password string, candidate string) error {
+	if password != s.password {
+		return fmt.Errorf("unknown password")
+	}
+
+	if s.votingActive {
+		return fmt.Errorf("voting active")
+	}
+
+	if tools.StringInSlice(candidate, s.candidates) {
+		return fmt.Errorf("candidate not found")
+	}
+
+	Position, err := tools.FindInSlice(s.candidates, candidate)
+
+	if err != nil {
+		return fmt.Errorf("candidate has no position")
+	}
+
+	s.candidates = tools.RemoveElementFromSlice(s.candidates, Position)
+	return nil
+}
+
+func (s *Store) GetName() string {
+	copyOfString := ""
+
+	for _, character := range s.name {
+		copyOfString += string(character)
+	}
+	return copyOfString
+}
+
+func (s *Store) SetName(password string, name string) error {
+	if password != s.password {
+		return fmt.Errorf("unknown password")
+	}
+
+	if s.votingActive {
+		return fmt.Errorf("voting active")
+	}
+
+	s.name = name
+	return nil
 }

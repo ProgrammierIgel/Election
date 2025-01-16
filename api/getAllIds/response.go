@@ -1,7 +1,9 @@
 package getallids
 
-import "github.com/programmierigel/voting/storage"
+import (
+	"github.com/programmierigel/voting/voting"
+)
 
 type ResponseBody struct {
-	Votes []storage.AllVotes `json:"votes"`
+	Votes []voting.AllVotes `json:"votes"`
 }

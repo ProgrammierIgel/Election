@@ -1,4 +1,4 @@
-package storage
+package voting
 
 type CandidatesVoteStore map[string][]string
 

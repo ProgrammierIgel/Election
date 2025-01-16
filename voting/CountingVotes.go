@@ -1,6 +1,3 @@
-package storage
-
+package voting
 
 type CountingVotes map[string]int
-
-

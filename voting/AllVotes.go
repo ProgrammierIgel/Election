@@ -1,4 +1,4 @@
-package storage
+package voting
 
 type AllVotes struct {
 	ID       int
