@@ -260,6 +260,10 @@ func (s *Store) RemoveCandidate(password string, candidate string) error {
 		return fmt.Errorf("voting active")
 	}
 
+	if candidate == "undefined" {
+		return fmt.Errorf("cannot remove undefined")
+	}
+
 	if tools.StringInSlice(candidate, s.candidates) {
 		return fmt.Errorf("candidate not found")
 	}
