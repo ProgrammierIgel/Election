@@ -86,6 +86,10 @@ func (s *Store) InsertNewVotable(password string, votable string) error {
 	if s.votingActive {
 		return fmt.Errorf("voting is active")
 	}
+
+	if s.IdExists(votable) {
+		return fmt.Errorf("votable already exists")
+	}
 	PosUndef, err := tools.FindInSlice(s.candidates, "undefined")
 	if err != nil {
 		return err
@@ -239,6 +243,10 @@ func (s *Store) AddCandidate(password string, candidate string) error {
 		return fmt.Errorf("voting active")
 	}
 
+	if tools.StringInSlice(candidate, s.candidates) {
+		return fmt.Errorf("candidate already exists")
+	}
+
 	s.candidates = append(s.candidates, candidate)
 	return nil
 }
@@ -298,4 +306,15 @@ func (s *Store) SetName(password string, name string) error {
 
 	s.name = name
 	return nil
+}
+
+func (s *Store) IdExists(id string) bool {
+	for _, candidate := range s.votes {
+		for _, vote := range candidate {
+			if vote == id {
+				return true
+			}
+		}
+	}
+	return false
 }
