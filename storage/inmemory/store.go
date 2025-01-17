@@ -69,7 +69,6 @@ func (s *Store) GetAllUndefinedVotes(password string) ([]voting.AllVotes, error)
 	for j := range s.votes[s.candidates[PosOfUndefined]] {
 
 		allVotes = append(allVotes, voting.AllVotes{
-			ID:       j,
 			VoteName: s.votes[s.candidates[PosOfUndefined]][j],
 			Value:    s.candidates[PosOfUndefined],
 		})

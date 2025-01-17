@@ -1,12 +1,12 @@
 package tools
 
 func RemoveElementFromSlice(slice []string, position int) []string {
-	slice[position] = slice[len(slice)-1]
-	return slice[:len(slice)-1]
+	returnedSlice := make([]string, 0, len(slice)-2)
+	for pos, value := range slice {
+		if pos == position {
+			continue
+		}
+		returnedSlice = append(returnedSlice, value)
+	}
+	return returnedSlice
 }
-
-// Other Way
-
-// func RemoveIndex(s []string, index int) []string {
-// 	return append(s[:index], s[index+1:]...)
-// }
