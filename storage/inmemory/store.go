@@ -78,16 +78,14 @@ func (s *Store) GetAllUndefinedVotes(password string) ([]voting.AllVotes, error)
 	return allVotes, nil
 }
 
-
-
 func (s *Store) InsertNewVotable(password string, votable string) error {
 	if password != s.password {
 		return fmt.Errorf("unknown password")
 	}
 
-  if s.votingActive {
-    return fmt.Errorf("voting is active")
-  }
+	if s.votingActive {
+		return fmt.Errorf("voting is active")
+	}
 	PosUndef, err := tools.FindInSlice(s.candidates, "undefined")
 	if err != nil {
 		return err
@@ -97,33 +95,34 @@ func (s *Store) InsertNewVotable(password string, votable string) error {
 	return nil
 }
 
-func (s *Store) RemoveVotable(password string, votable string) error {
+func (s *Store) RemoveVotable(password string, id string) error {
 	if password != s.password {
 		return fmt.Errorf("unknown password")
 	}
 
-  if s.votingActive {
-    return fmt.Errorf("voting is active")
-  }
+	if s.votingActive {
+		return fmt.Errorf("voting is active")
+	}
 	PosUndef, err := tools.FindInSlice(s.candidates, "undefined")
 	if err != nil {
 		return err
 	}
 
-  if !tools.StringInSlice(votable, s.votes[s.candidates[PosUndef]]){
-    return fmt.Errorf("votable not found")
-  }
+	if !tools.StringInSlice(id, s.votes[s.candidates[PosUndef]]) {
+		return fmt.Errorf("votable not found")
+	}
 
-  PositionOfRemoval,err := tools.FindInSlice(s.votes[s.candidates[PosUndef]], votable)
+	PositionOfRemoval, err := tools.FindInSlice(s.votes[s.candidates[PosUndef]], id)
 
-  if err != nil {
-    return fmt.Errorf("internal error")
-  }
+	if err != nil {
+		return fmt.Errorf("internal error")
+	}
 
 	s.votes[s.candidates[PosUndef]] = tools.RemoveElementFromSlice(s.votes[s.candidates[PosUndef]], PositionOfRemoval)
 	s.votesCounting[s.candidates[PosUndef]] -= 1
 	return nil
 }
+
 func (s *Store) InsertVote(insertedVote voting.Vote) error {
 	allCandidates := s.GetCandidates()
 
@@ -178,8 +177,6 @@ func (s *Store) InsertVote(insertedVote voting.Vote) error {
 
 }
 
-
-
 func (s *Store) DeleteAll(password string) error {
 	if password != s.password {
 		return fmt.Errorf("unknown password")
@@ -202,8 +199,6 @@ func (s *Store) DeleteAllVotes(password string) error {
 	s.votingActive = newStore.votingActive
 	return nil
 }
-
-
 
 func (s *Store) ActivateVoting(password string) (bool, error) {
 	if s.votingActive {
@@ -234,8 +229,6 @@ func (s *Store) DeactivateVoting(password string) (bool, error) {
 func (s *Store) IsVotingActive() bool {
 	return s.votingActive
 }
-
-
 
 func (s *Store) AddCandidate(password string, candidate string) error {
 	if password != s.password {
@@ -269,24 +262,21 @@ func (s *Store) RemoveCandidate(password string, candidate string) error {
 		return fmt.Errorf("candidate has no position")
 	}
 
-  PositionOfUndefined, err := tools.FindInSlice(s.candidates, "undefined")
+	PositionOfUndefined, err := tools.FindInSlice(s.candidates, "undefined")
 
 	if err != nil {
 		return fmt.Errorf("candidate has no position")
 	}
 
-  count := s.votesCounting[s.candidates[Position]]
+	count := s.votesCounting[s.candidates[Position]]
 
-  if 0 < count {
-    s.votesCounting[s.candidates[PositionOfUndefined]] += count
-  }
+	if 0 < count {
+		s.votesCounting[s.candidates[PositionOfUndefined]] += count
+	}
 
 	s.candidates = tools.RemoveElementFromSlice(s.candidates, Position)
 	return nil
 }
-
-
-
 
 func (s *Store) GetName() string {
 	copyOfString := ""

@@ -1,3 +1,3 @@
 // Package removecandidate implements the router handler
-// for the "add new Candidates" command.
+// for the "remove a candidate" command.
 package removecandidate

@@ -21,5 +21,6 @@ type Store interface {
 	InsertNewVotable(password string, votabel string) error
 	AddCandidate(password string, candidate string) error
 	RemoveCandidate(password string, candidate string) error
+	RemoveVotable(password string, id string) error
 	SetName(password string, name string) error
 }
