@@ -87,7 +87,7 @@ func (s *Store) InsertNewVotable(password string, votable string) error {
 		return fmt.Errorf("voting is active")
 	}
 
-	if s.IdExists(votable) {
+	if s.IDExists(votable) {
 		return fmt.Errorf("votable already exists")
 	}
 	PosUndef, err := tools.FindInSlice(s.candidates, "undefined")
@@ -308,7 +308,7 @@ func (s *Store) SetName(password string, name string) error {
 	return nil
 }
 
-func (s *Store) IdExists(id string) bool {
+func (s *Store) IDExists(id string) bool {
 	for _, candidate := range s.votes {
 		for _, vote := range candidate {
 			if vote == id {
