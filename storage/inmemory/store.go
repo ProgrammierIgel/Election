@@ -303,10 +303,9 @@ func (s *Store) SetName(password string, name string) error {
 		return fmt.Errorf("unknown password")
 	}
 
-	if s.votingActive {
-		return fmt.Errorf("voting active")
-	}
-
+  if s.name == name{
+    return fmt.Errorf("want the set same name")
+  }
 	s.name = name
 	return nil
 }
